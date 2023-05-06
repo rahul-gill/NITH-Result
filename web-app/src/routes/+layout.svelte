@@ -11,6 +11,7 @@
 		<img src="app-icon.png" alt="" style="width:40px;height:40px" />
 		Ranks
 	</a>
+	<t/>
 	<div style="width:100%">
 		{data.date}
 	</div>

@@ -1,13 +1,13 @@
-import Database from 'better-sqlite3';
 import type { ResultDataConfig, SemesterResult, SemesterResultDBType, StudentResult, StudentResultCompact, SubjectResult, SubjectResultDBType } from "./types";
 import type { SortingType } from "./types";
-import { readFileSync } from 'fs';
+import _result_config from '../../../static/result_config.json';
+import _json_data from '../../../static/ranks_result.json';
+import _json_data_detailed from '../../../static/detailed_result.json';
 
-const db = new Database('./result.db', { verbose: console.log });
 
-const jsonData: StudentResultCompact[] = JSON.parse(readFileSync('src/lib/server/ranks_result.json', 'utf-8'));
-const jsonDataDetailed: StudentResult[] = JSON.parse(readFileSync('src/lib/server/detailed_result.json', 'utf-8'));
-export const resultConfig: ResultDataConfig = JSON.parse(readFileSync('src/lib/server/result_config.json', 'utf-8'));
+const jsonData: StudentResultCompact[] = _json_data;
+const jsonDataDetailed: StudentResult[] = _json_data_detailed;
+export const resultConfig: ResultDataConfig = _result_config;
 
 export function getFilteredAndSortedResults(
     nameOrRollNumberQuery: string,
