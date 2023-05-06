@@ -1,0 +1,27 @@
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;1,300&display=swap');
+:root {
+    --primary:#1c4587;
+    --on-primary: #fff;
+    --background: #f7f7f7;
+    --on-background: #333;
+    --container: #fff;
+    --on-container: #333;
+    --outline: #007aff;
+}
+
+.dark {
+    --primary: #007aff;
+    --on-primary: #fff;
+    --background: #222;
+    --on-background: #fff;
+    --container: #333;
+    --on-container: #ddd;
+    --outline: #1c4587;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--on-background);
+    font-family: 'JetBrains Mono', monospace;
+}
