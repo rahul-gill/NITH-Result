@@ -1,21 +1,39 @@
 package Result_NITH
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func GenRollNumbers() (rollNumbers []string) {
-	for i := 0; i < 150; i++ {
-		//2023
-		rollNumbers = append(rollNumbers, fmt.Sprintf("191%.3d", i), fmt.Sprintf("192%.3d", i), fmt.Sprintf("193%.3d", i), fmt.Sprintf("194%.3d", i), fmt.Sprintf("195%.3d", i), fmt.Sprintf("196%.3d", i), fmt.Sprintf("197%.3d", i), fmt.Sprintf("198%.3d", i))
-		if i < 100 {
-			rollNumbers = append(rollNumbers, fmt.Sprintf("1955%.2d", i), fmt.Sprintf("1945%.2d", i))
+
+	for branchCode := range branchCodesToNamesBefore19 {
+	innermost2:
+		for i := 0; i < 150; i++ {
+			if branchCode == "45" || branchCode == "55" {
+				if i > 100 {
+					break innermost2
+				}
+				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.2d", branchCode, i))
+			} else {
+				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.3d", branchCode, i))
+			}
+
 		}
-		//2022
-		rollNumbers = append(rollNumbers, fmt.Sprintf("181%.3d", i), fmt.Sprintf("182%.3d", i), fmt.Sprintf("183%.3d", i), fmt.Sprintf("184%.3d", i), fmt.Sprintf("185%.3d", i), fmt.Sprintf("186%.3d", i), fmt.Sprintf("187%.3d", i), fmt.Sprintf("188%.3d", i))
-		if i < 100 {
-			rollNumbers = append(rollNumbers, fmt.Sprintf("1855%.2d", i), fmt.Sprintf("1845%.2d", i))
-		}
-		//TODO: i don't understand 2024+ scheme of roll numbers
 	}
+
+	for year := 20; year <= 22; year++ {
+		for branchCode := range branchCodesToNames {
+		innermost:
+			for i := 0; i < 150; i++ {
+				if branchCode == "dcs" || branchCode == "dec" && i > 100 {
+					break innermost
+				}
+				rollNumbers = append(rollNumbers, fmt.Sprintf("%d%s%.3d", year, branchCode, i))
+			}
+		}
+	}
+
 	return
 }
 
@@ -25,50 +43,45 @@ func GetUrlForRollNumber(rollNumber string) string {
 }
 
 func GetBatchAndBranch(rollNumber string) (batch string, branch string) {
-	yearStr := rollNumber[:2]
-	branchCode := rollNumber[2:3]
+	year, _ := strconv.Atoi(rollNumber[:2])
+	batch = "20" + strconv.Itoa(year+4)
 
-	switch yearStr {
-	case "18":
-		batch = "2022"
-	case "19":
-		batch = "2023"
-	case "20":
-		batch = "2024"
-	case "21":
-		batch = "2025"
-	default:
-		batch = "Unset"
-	}
-
-	switch branchCode {
-	case "1":
-		branch = "Civil"
-	case "2":
-		branch = "Electrical"
-	case "3":
-		branch = "Mechanical"
-	case "4":
-		branch = "Electronics"
-	case "5":
-		branch = "ComputerScience"
-	case "6":
-		branch = "Arch"
-	case "7":
-		branch = "Chemical"
-	case "8":
-		branch = "Chemical"
-	default:
-		branch = "Unset"
-	}
-	if rollNumber[3] == '5' {
-		if rollNumber[2] == '4' {
-			branch = "ElectronicsDual"
+	if year <= 19 {
+		branchName, found := branchCodesToNamesBefore19[rollNumber[2:3]]
+		if found {
+			branch = branchName
+		} else {
+			branchName = branchCodesToNamesBefore19[rollNumber[2:4]]
 		}
-		if rollNumber[2] == '6' {
-			branch = "ComputerScienceDual"
-		}
+	} else {
+		branch = branchCodesToNames[rollNumber[2:5]]
 	}
+	return
+}
 
-	return batch, branch
+var branchCodesToNames = map[string]string{
+	"bce": "Civil",
+	"bee": "Electrical",
+	"bme": "Mechanical",
+	"bec": "Electronics",
+	"bcs": "Computer Science",
+	"bar": "Architecture",
+	"bch": "Chemical",
+	"bms": "Material",
+	"dcs": "Computer Science Dual",
+	"dec": "Electronics Dual",
+	"bph": "Physics",
+}
+
+var branchCodesToNamesBefore19 = map[string]string{
+	"1":  "Civil",
+	"2":  "Electrical",
+	"3":  "Mechanical",
+	"4":  "Electronics",
+	"5":  "Computer Science",
+	"6":  "Architecture",
+	"7":  "Chemical",
+	"8":  "Material",
+	"55": "Computer Science Dual",
+	"45": "Electronics Dual",
 }

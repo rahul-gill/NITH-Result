@@ -4,17 +4,20 @@ import (
 	resultNITH "Result-NITH"
 	"Result-NITH/db"
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/mattn/go-sqlite3"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
 	"strconv"
 	"strings"
 	"sync/atomic"
+	"time"
 )
 
 // ParseResultHtml depends on the current html structure of official result website
@@ -111,13 +114,19 @@ func ParseResultHtml(body io.ReadCloser) (user *resultNITH.StudentHtmlParsed, la
 }
 
 // StoreStudentInDb this function will contain the logic to associate roll number with branch and batch year
-func StoreStudentInDb(queries *db.Queries, students []resultNITH.StudentHtmlParsed) error {
+func StoreStudentInDb(sqlDB *sql.DB, queries *db.Queries, students []resultNITH.StudentHtmlParsed) error {
 	ctx := context.Background()
 
+	tx, err := sqlDB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	qtx := queries.WithTx(tx)
 	for studentIndex, student := range students {
 		//student table
 		batch, branch := resultNITH.GetBatchAndBranch(student.RollNumber)
-		_, err := queries.CreateStudent(ctx, db.CreateStudentParams{
+		_, err := qtx.CreateStudent(ctx, db.CreateStudentParams{
 			RollNumber:     student.RollNumber,
 			Name:           student.Name,
 			FathersName:    student.FathersName,
@@ -132,7 +141,7 @@ func StoreStudentInDb(queries *db.Queries, students []resultNITH.StudentHtmlPars
 		//subject table
 		for _, sem := range student.SemesterResults {
 			for _, subject := range sem.SubjectResults {
-				_, err := queries.CreateSubject(ctx, db.CreateSubjectParams{
+				_, err := qtx.CreateSubject(ctx, db.CreateSubjectParams{
 					Code:    subject.SubjectCode,
 					Name:    subject.SubjectName,
 					Credits: subject.SubPoint,
@@ -144,7 +153,7 @@ func StoreStudentInDb(queries *db.Queries, students []resultNITH.StudentHtmlPars
 		}
 		//semester result
 		for semNumber, sem := range student.SemesterResults {
-			_, err := queries.CreateSemesterResultData(ctx, db.CreateSemesterResultDataParams{
+			_, err := qtx.CreateSemesterResultData(ctx, db.CreateSemesterResultDataParams{
 				StudentRollNumber: student.RollNumber,
 				Semester:          int64(semNumber + 1),
 				Cgpi:              sem.CGPI,
@@ -157,7 +166,7 @@ func StoreStudentInDb(queries *db.Queries, students []resultNITH.StudentHtmlPars
 		//subject result data
 		for semNumber, sem := range student.SemesterResults {
 			for _, subject := range sem.SubjectResults {
-				_, err := queries.CreateSubjectResultData(ctx, db.CreateSubjectResultDataParams{
+				_, err := qtx.CreateSubjectResultData(ctx, db.CreateSubjectResultDataParams{
 					StudentRollNumber: student.RollNumber,
 					SubjectCode:       subject.SubjectCode,
 					Grade:             subject.Grade,
@@ -171,7 +180,7 @@ func StoreStudentInDb(queries *db.Queries, students []resultNITH.StudentHtmlPars
 		}
 		println("Finished student Number ", studentIndex, "out of ", len(students))
 	}
-	return nil
+	return tx.Commit()
 }
 
 func getResultHtml(rollNumber string) (io.ReadCloser, error) {
@@ -232,6 +241,7 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 	ch := make(chan *resultNITH.StudentHtmlParsed)
 	for _, rollNumber := range rollNumbers {
 		go func(ch chan *resultNITH.StudentHtmlParsed, rollNumber string) {
+			time.Sleep(time.Second * time.Duration(rand.Intn(5)+4))
 			resultHtml, err := getResultHtml(rollNumber)
 			if err != nil {
 				atomic.AddInt32(&doneRollNumbers, 1)
@@ -266,9 +276,9 @@ func main() {
 	students := getResultsFromWeb()
 	println("\n\nFinished fetching students\n")
 
-	queries := resultNITH.GetDbQueriesForNewDb("result_new.db")
+	db, queries := resultNITH.GetDbQueriesForNewDb("tmp.db")
 
-	err := StoreStudentInDb(queries, students)
+	err := StoreStudentInDb(db, queries, students)
 	if err != nil {
 		println("Error in storeTheStudentInDb")
 		println(err)

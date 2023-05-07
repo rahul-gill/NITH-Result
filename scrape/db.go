@@ -13,7 +13,7 @@ import (
 //go:embed db/sql/schema.sql
 var DDL string
 
-func GetDbQueries() *db.Queries {
+func GetDbQueries() (*sql.DB, *db.Queries) {
 
 	database, err := sql.Open("sqlite3", "./result.db")
 	if err != nil {
@@ -21,10 +21,10 @@ func GetDbQueries() *db.Queries {
 	}
 
 	queries := db.New(database)
-	return queries
+	return database, queries
 }
 
-func GetDbQueriesForNewDb(fileName string) *db.Queries {
+func GetDbQueriesForNewDb(fileName string) (*sql.DB, *db.Queries) {
 	if _, err := os.Stat(fileName); os.IsExist(err) {
 		fmt.Printf("File %s already exist\n", fileName)
 	}
@@ -41,5 +41,5 @@ func GetDbQueriesForNewDb(fileName string) *db.Queries {
 		log.Fatal(err)
 	}
 	queries := db.New(database)
-	return queries
+	return database, queries
 }
