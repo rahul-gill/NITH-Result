@@ -238,35 +238,23 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 	var doneRollNumbers int32 = 0
 	//build an array of student objects that contain result
 	var students []resultNITH.StudentHtmlParsed
-	ch := make(chan *resultNITH.StudentHtmlParsed)
 	for _, rollNumber := range rollNumbers {
-		go func(ch chan *resultNITH.StudentHtmlParsed, rollNumber string) {
-			time.Sleep(time.Second * time.Duration(rand.Intn(20)+5))
-			resultHtml, err := getResultHtml(rollNumber)
-			if err != nil {
-				atomic.AddInt32(&doneRollNumbers, 1)
-				err = fmt.Errorf("error for rollNumber %s: %w, Total done: %d\n", rollNumber, err, doneRollNumbers)
-				log.Print(err)
-				ch <- nil
-				return
-			}
-			student, _, err := ParseResultHtml(resultHtml)
-			if err == nil {
-				atomic.AddInt32(&doneRollNumbers, 1)
-				fmt.Printf("Success for rollNumber %s, Total done: %d\n", rollNumber, doneRollNumbers)
-				ch <- student
-			} else {
-				atomic.AddInt32(&doneRollNumbers, 1)
-				err = fmt.Errorf("error for rollNumber %s: %w, Total done: %d\n", rollNumber, err, doneRollNumbers)
-				log.Print(err)
-				ch <- nil
-			}
-		}(ch, rollNumber)
-	}
-	for range rollNumbers {
-		newStudent := <-ch
-		if newStudent != nil {
-			students = append(students, *newStudent)
+		time.Sleep(time.Second * time.Duration(rand.Intn(5)+5))
+		resultHtml, err := getResultHtml(rollNumber)
+		if err != nil {
+			atomic.AddInt32(&doneRollNumbers, 1)
+			err = fmt.Errorf("error for rollNumber %s: %w, Total done: %d\n", rollNumber, err, doneRollNumbers)
+			log.Print(err)
+		}
+		student, _, err := ParseResultHtml(resultHtml)
+		if err == nil {
+			atomic.AddInt32(&doneRollNumbers, 1)
+			fmt.Printf("Success for rollNumber %s, Total done: %d\n", rollNumber, doneRollNumbers)
+			students = append(students, *student)
+		} else {
+			atomic.AddInt32(&doneRollNumbers, 1)
+			err = fmt.Errorf("error for rollNumber %s: %w, Total done: %d\n", rollNumber, err, doneRollNumbers)
+			log.Print(err)
 		}
 	}
 	return students
