@@ -15,7 +15,7 @@ jobs:
 
 
       - name: Build and run fetch_result.go
-        run: cd scrape && go run scmd/fetch_result.go
+        run: cd scrape && go run cmd/fetch_result.go
 
       - name: Build and run gen_json.go
         run: go run cmd/gen_json.go

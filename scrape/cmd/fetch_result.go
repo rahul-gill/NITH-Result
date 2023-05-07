@@ -241,7 +241,7 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 	ch := make(chan *resultNITH.StudentHtmlParsed)
 	for _, rollNumber := range rollNumbers {
 		go func(ch chan *resultNITH.StudentHtmlParsed, rollNumber string) {
-			time.Sleep(time.Second * time.Duration(rand.Intn(5)+4))
+			time.Sleep(time.Second * time.Duration(rand.Intn(20)+5))
 			resultHtml, err := getResultHtml(rollNumber)
 			if err != nil {
 				atomic.AddInt32(&doneRollNumbers, 1)
@@ -276,7 +276,7 @@ func main() {
 	students := getResultsFromWeb()
 	println("\n\nFinished fetching students\n")
 
-	db, queries := resultNITH.GetDbQueriesForNewDb("tmp.db")
+	db, queries := resultNITH.GetDbQueriesForNewDb("result.db")
 
 	err := StoreStudentInDb(db, queries, students)
 	if err != nil {
