@@ -250,7 +250,7 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 			log.Print(err)
 		}
 		student, _, err := ParseResultHtml(resultHtml)
-		if err == nil {
+		if err == nil && student != nil {
 			atomic.AddInt32(&doneRollNumbers, 1)
 			fmt.Printf("Success for rollNumber %s, Total done: %d\n", rollNumber, doneRollNumbers)
 			students = append(students, *student)
