@@ -109,6 +109,9 @@ func ParseResultHtml(body io.ReadCloser) (user *resultNITH.StudentHtmlParsed, la
 			})
 		}
 	})
+	if len(user.SemesterResults) <= 0 {
+		return nil, "", fmt.Errorf("invalid html")
+	}
 	user.CGPI = user.SemesterResults[len(user.SemesterResults)-1].CGPI
 	return
 }

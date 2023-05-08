@@ -39,7 +39,7 @@ func GenRollNumbers() (rollNumbers []string) {
 
 func GetUrlForRollNumber(rollNumber string) string {
 	scheme := rollNumber[:2]
-	return fmt.Sprintf("http://14.139.56.19/scheme%s/studentresult/result.asp", scheme)
+	return fmt.Sprintf("http://results.nith.ac.in/scheme%s/studentresult/result.asp", scheme)
 }
 
 func GetBatchAndBranch(rollNumber string) (batch string, branch string) {
