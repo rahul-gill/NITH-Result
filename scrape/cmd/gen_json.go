@@ -114,7 +114,8 @@ func getDetailedResults(queries *db.Queries) []resultNITH.StudentResult {
 
 func main() {
 	// Detailed result data
-	data := getDetailedResults(resultNITH.GetDbQueries())
+	_, queries := resultNITH.GetDbQueries()
+	data := getDetailedResults(queries)
 	jsonBytes, err := json.Marshal(data)
 	if err != nil {
 		log.Fatal(err)
@@ -125,7 +126,7 @@ func main() {
 	}
 
 	// Ranks result data
-	data2 := getRanksData(resultNITH.GetDbQueries())
+	data2 := getRanksData(queries)
 	jsonBytes2, err := json.Marshal(data2)
 	if err != nil {
 		log.Fatal(err)

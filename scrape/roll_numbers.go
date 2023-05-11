@@ -5,9 +5,35 @@ import (
 	"strconv"
 )
 
+func GenRollNumbersByBranchAndYear(branchCode string, yearCode int) (rollNumbers []string) {
+	if yearCode == 19 {
+		for i := 0; i < 150; i++ {
+			if branchCode == "45" || branchCode == "55" {
+				if i > 100 {
+					break
+				}
+				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.2d", branchCode, i))
+			} else {
+				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.3d", branchCode, i))
+			}
+
+		}
+
+	} else {
+		for i := 0; i < 150; i++ {
+			if branchCode == "dcs" || branchCode == "dec" && i > 100 {
+				break
+			}
+			rollNumbers = append(rollNumbers, fmt.Sprintf("%d%s%.3d", yearCode, branchCode, i))
+		}
+	}
+
+	return
+}
+
 func GenRollNumbers() (rollNumbers []string) {
 
-	for branchCode := range branchCodesToNamesBefore19 {
+	for branchCode := range BranchCodesToNamesBefore19 {
 	innermost2:
 		for i := 0; i < 150; i++ {
 			if branchCode == "45" || branchCode == "55" {
@@ -23,7 +49,7 @@ func GenRollNumbers() (rollNumbers []string) {
 	}
 
 	for year := 20; year <= 22; year++ {
-		for branchCode := range branchCodesToNames {
+		for branchCode := range BranchCodesToNames {
 		innermost:
 			for i := 0; i < 150; i++ {
 				if branchCode == "dcs" || branchCode == "dec" && i > 100 {
@@ -47,19 +73,19 @@ func GetBatchAndBranch(rollNumber string) (batch string, branch string) {
 	batch = "20" + strconv.Itoa(year+4)
 
 	if year <= 19 {
-		branchName, found := branchCodesToNamesBefore19[rollNumber[2:3]]
+		branchName, found := BranchCodesToNamesBefore19[rollNumber[2:3]]
 		if found {
 			branch = branchName
 		} else {
-			branchName = branchCodesToNamesBefore19[rollNumber[2:4]]
+			branchName = BranchCodesToNamesBefore19[rollNumber[2:4]]
 		}
 	} else {
-		branch = branchCodesToNames[rollNumber[2:5]]
+		branch = BranchCodesToNames[rollNumber[2:5]]
 	}
 	return
 }
 
-var branchCodesToNames = map[string]string{
+var BranchCodesToNames = map[string]string{
 	"bce": "Civil",
 	"bee": "Electrical",
 	"bme": "Mechanical",
@@ -73,7 +99,7 @@ var branchCodesToNames = map[string]string{
 	"bph": "Physics",
 }
 
-var branchCodesToNamesBefore19 = map[string]string{
+var BranchCodesToNamesBefore19 = map[string]string{
 	"1":  "Civil",
 	"2":  "Electrical",
 	"3":  "Mechanical",

@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -234,9 +235,9 @@ func getResultHtml(rollNumber string) (io.ReadCloser, error) {
 	return resp.Body, nil
 }
 
-func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
+func getResultsFromWeb(branchCode string, yearCode int) []resultNITH.StudentHtmlParsed {
 	//build an array of roll numbers
-	rollNumbers := resultNITH.GenRollNumbers()
+	rollNumbers := resultNITH.GenRollNumbersByBranchAndYear(branchCode, yearCode)
 	println("Total roll numbers to process: ", len(rollNumbers))
 	var doneRollNumbers int32 = 0
 	//build an array of student objects that contain result
@@ -264,12 +265,25 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 }
 
 func main() {
-	students := getResultsFromWeb()
+	if len(os.Args) != 4 {
+		fmt.Println("Usage: go run fetch_result.go $yearCode $branchCode $alreadyCreated")
+		os.Exit(1)
+	}
+	yearCode, err1 := strconv.Atoi(os.Args[1])
+	branchCode := os.Args[2]
+	alreadyCreated, err3 := strconv.Atoi(os.Args[3])
+
+	if err1 != nil || err3 != nil {
+		fmt.Println("Invalid inputs")
+		os.Exit(1)
+	}
+
+	students := getResultsFromWeb(branchCode, yearCode)
 	println("\n\nFinished fetching students\n")
 
-	db, queries := resultNITH.GetDbQueriesForNewDb("result.db")
+	dbObj, queries := resultNITH.GetDbQueriesForNewDb("result.db", alreadyCreated == 1)
 
-	err := StoreStudentInDb(db, queries, students)
+	err := StoreStudentInDb(dbObj, queries, students)
 	if err != nil {
 		println("Error in storeTheStudentInDb")
 		println(err)

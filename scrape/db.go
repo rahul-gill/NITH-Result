@@ -24,8 +24,8 @@ func GetDbQueries() (*sql.DB, *db.Queries) {
 	return database, queries
 }
 
-func GetDbQueriesForNewDb(fileName string) (*sql.DB, *db.Queries) {
-	if _, err := os.Stat(fileName); os.IsExist(err) {
+func GetDbQueriesForNewDb(fileName string, alreadyCreated bool) (*sql.DB, *db.Queries) {
+	if _, err := os.Stat(fileName); os.IsExist(err) && !alreadyCreated {
 		fmt.Printf("File %s already exist\n", fileName)
 	}
 
@@ -36,9 +36,11 @@ func GetDbQueriesForNewDb(fileName string) (*sql.DB, *db.Queries) {
 	ctx := context.Background()
 
 	// create tables
-	_, err = database.ExecContext(ctx, DDL)
-	if err != nil {
-		log.Fatal(err)
+	if !alreadyCreated {
+		_, err = database.ExecContext(ctx, DDL)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	queries := db.New(database)
 	return database, queries
