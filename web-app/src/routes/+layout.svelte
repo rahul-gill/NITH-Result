@@ -9,10 +9,9 @@
 <nav>
 	<a href="/" class="home">
 		<img src="app-icon.png" alt="" style="width:40px;height:40px" />
-		Ranks
+		Ranks&nbsp; 
 	</a>
-	<t/>
-	<div style="width:100%">
+	<div style="width:100%;font-size:80%">
 		{data.date}
 	</div>
 	<ThemeToggle />
