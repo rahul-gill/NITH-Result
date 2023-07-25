@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -268,7 +267,7 @@ func main() {
 
 	students := getResultsFromWeb()
 	println("\n\nFinished fetching students\n")
-
+	alreadyCreated := 1
 	dbObj, queries := resultNITH.GetDbQueriesForNewDb("result.db", alreadyCreated == 1)
 
 	err := StoreStudentInDb(dbObj, queries, students)
