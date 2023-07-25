@@ -235,9 +235,9 @@ func getResultHtml(rollNumber string) (io.ReadCloser, error) {
 	return resp.Body, nil
 }
 
-func getResultsFromWeb(branchCode string, yearCode int) []resultNITH.StudentHtmlParsed {
+func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 	//build an array of roll numbers
-	rollNumbers := resultNITH.GenRollNumbersByBranchAndYear(branchCode, yearCode)
+	rollNumbers := resultNITH.GenRollNumbers()
 	println("Total roll numbers to process: ", len(rollNumbers))
 	var doneRollNumbers int32 = 0
 	//build an array of student objects that contain result
@@ -265,20 +265,8 @@ func getResultsFromWeb(branchCode string, yearCode int) []resultNITH.StudentHtml
 }
 
 func main() {
-	if len(os.Args) != 4 {
-		fmt.Println("Usage: go run fetch_result.go $yearCode $branchCode $alreadyCreated")
-		os.Exit(1)
-	}
-	yearCode, err1 := strconv.Atoi(os.Args[1])
-	branchCode := os.Args[2]
-	alreadyCreated, err3 := strconv.Atoi(os.Args[3])
 
-	if err1 != nil || err3 != nil {
-		fmt.Println("Invalid inputs")
-		os.Exit(1)
-	}
-
-	students := getResultsFromWeb(branchCode, yearCode)
+	students := getResultsFromWeb()
 	println("\n\nFinished fetching students\n")
 
 	dbObj, queries := resultNITH.GetDbQueriesForNewDb("result.db", alreadyCreated == 1)
