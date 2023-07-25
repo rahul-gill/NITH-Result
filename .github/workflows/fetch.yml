@@ -16,25 +16,40 @@ jobs:
 
       - name: Build and run fetch_result.go
         run: cd scrape && go run cmd/fetch_result.go
-
-      - name: Build and run gen_json.go
-        run: go run cmd/gen_json.go
-
+        
       - name: Save output files
         uses: actions/upload-artifact@master
         with:
-          name: ranks_result.json
-          path: scrape/ranks_result.json
-
-
-      - name: Save output files
+           name: result.db
+           path: scrape/result.db
+           
+       
+      - name: Save output files 2
         uses: actions/upload-artifact@master
         with:
-          name: detailed_result.json
-          path: scrape/detailed_result.json
+           name: resukt-new.db
+           path: scrape/result_new.db
 
-      - name: Save output files
-        uses: actions/upload-artifact@master
-        with:
-          name: result_config.json
-          path: scrape/result_config.json
+      
+
+#       - name: Build and run gen_json.go
+#         run: go run cmd/gen_json.go
+
+#       - name: Save output files
+#         uses: actions/upload-artifact@master
+#         with:
+#           name: ranks_result.json
+#           path: scrape/ranks_result.json
+
+
+#       - name: Save output files
+#         uses: actions/upload-artifact@master
+#         with:
+#           name: detailed_result.json
+#           path: scrape/detailed_result.json
+
+#       - name: Save output files
+#         uses: actions/upload-artifact@master
+#         with:
+#           name: result_config.json
+#           path: scrape/result_config.json
