@@ -1,12 +1,12 @@
 name: Run Go Files and Generate Output
 on: workflow_dispatch
-inputs:
-  branch:
-    description: 'Branch to be fetched'
-    required: true
-  batch:
-    description: 'Batch to be fetched'
-    required: true
+# inputs:
+#   branch:
+#     description: 'Branch to be fetched'
+#     required: true
+#   batch:
+#     description: 'Batch to be fetched'
+#     required: true
 
 jobs:
   run-go-files:
