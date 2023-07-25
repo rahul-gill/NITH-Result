@@ -1,12 +1,5 @@
 name: Run Go Files and Generate Output
 on: workflow_dispatch
-# inputs:
-#   branch:
-#     description: 'Branch to be fetched'
-#     required: true
-#   batch:
-#     description: 'Batch to be fetched'
-#     required: true
 
 jobs:
   run-go-files:
@@ -22,32 +15,26 @@ jobs:
 
 
       - name: Build and run fetch_result.go
-        run: go run scrape/cmd/fetch_result.go
+        run: cd scrape && go run cmd/fetch_result.go
 
       - name: Build and run gen_json.go
-        run: go run scrape/cmd/gen_json.go
+        run: go run cmd/gen_json.go
 
       - name: Save output files
         uses: actions/upload-artifact@master
         with:
           name: ranks_result.json
-          path: ranks_result.json
+          path: scrape/ranks_result.json
 
 
       - name: Save output files
         uses: actions/upload-artifact@master
         with:
           name: detailed_result.json
-          path: detailed_result.json
+          path: scrape/detailed_result.json
 
       - name: Save output files
         uses: actions/upload-artifact@master
         with:
           name: result_config.json
-          path: result_config.json
-
-      - name: Save output files
-        uses: actions/upload-artifact@master
-        with:
-          name: result.db
-          path: scrape/result.db
+          path: scrape/result_config.json
