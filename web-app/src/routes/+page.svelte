@@ -36,6 +36,7 @@
 </script>
 
 <form
+	id="root_form"
 	on:submit|preventDefault={handleSubmit}
 	method="POST"
 	use:enhance={({ form, data, action, cancel, submitter }) => {
@@ -163,7 +164,7 @@
 		transition: all 0.2s ease-in-out;
 		transform: scale(1);
 
-		width: 100%;
+		width: 95%;
 	}
 
 	.ranks {
@@ -197,7 +198,19 @@
 		text-decoration: none;
 	}
 
-	@media (min-width: 768px) {
+	@media (max-width: 440px) {
+		.result-card-list {
+			font-size: 0.8em;
+		}
+	}
+
+	@media (max-width: 350px) {
+		.result-card-list {
+			font-size: 0.6em;
+		}
+	}
+
+	@media (min-width: 950px) {
 		.result-card {
 			width: calc(45% - 10px);
 		}
@@ -205,13 +218,8 @@
 
 	@media (min-width: 992px) {
 		.result-card {
-			width: calc(33.33% - 10px);
+			width: calc(40% - 10px);
 		}
 	}
 
-	@media (min-width: 1200px) {
-		.result-card {
-			width: calc(25% - 10px);
-		}
-	}
 </style>
