@@ -18,4 +18,5 @@
 - The code is automatically deploy on vercel if setup correctly
 - The code can be cleaned up: TODO
 - The last change somehow made the desktop layout shitty TODO
-
+- Don't know why web-app suddenly requires `export NODE_OPTIONS=--max_old_space_size=4096`
+- There's a bug, branches are not getting set properly with new roll number scheme(like `20BCE`)
