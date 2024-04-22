@@ -3,6 +3,7 @@ package Result_NITH
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func GenRollNumbersByBranchAndYear(branchCode string, yearCode int) (rollNumbers []string) {
@@ -32,7 +33,6 @@ func GenRollNumbersByBranchAndYear(branchCode string, yearCode int) (rollNumbers
 }
 
 func GenRollNumbers() (rollNumbers []string) {
-
 	for branchCode := range BranchCodesToNamesBefore19 {
 	innermost2:
 		for i := 0; i < 150; i++ {
@@ -40,15 +40,17 @@ func GenRollNumbers() (rollNumbers []string) {
 				if i > 100 {
 					break innermost2
 				}
+				rollNumbers = append(rollNumbers, fmt.Sprintf("18%s%.2d", branchCode, i))
 				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.2d", branchCode, i))
 			} else {
+				rollNumbers = append(rollNumbers, fmt.Sprintf("18%s%.3d", branchCode, i))
 				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.3d", branchCode, i))
 			}
 
 		}
 	}
 
-	for year := 20; year <= 22; year++ {
+	for year := 20; year <= 23; year++ {
 		for branchCode := range BranchCodesToNames {
 		innermost:
 			for i := 0; i < 150; i++ {
@@ -69,6 +71,7 @@ func GetUrlForRollNumber(rollNumber string) string {
 }
 
 func GetBatchAndBranch(rollNumber string) (batch string, branch string) {
+	rollNumber = strings.ToLower(rollNumber)
 	year, _ := strconv.Atoi(rollNumber[:2])
 	batch = "20" + strconv.Itoa(year+4)
 
