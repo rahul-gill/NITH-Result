@@ -35,6 +35,11 @@
 	}
 </script>
 
+<svelte:head>
+    <title>NITH results</title> 
+</svelte:head>
+
+
 <form
 	id="root_form"
 	on:submit|preventDefault={handleSubmit}
@@ -127,6 +132,7 @@
 		background-color: var(--container);
 		color: var(--on-container);
 		transition: all 0.2s ease-in-out;
+		
 	}
 	input:focus,
 	select:focus {

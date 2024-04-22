@@ -56,6 +56,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  
 
     --switch-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1) inset;
     --transition: all 0.3s cubic-bezier(0.76, 0, 0.24, 1);
@@ -76,6 +77,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
+  border: 1px solid var(--outline);
   border-radius: 50px;
   position: relative;
   height: 40px;
@@ -85,10 +87,6 @@
   transition: var(--transition);
 }
 
-.theme-switch .label:hover .moon,
-.theme-switch .label:hover .sun {
-  transform: rotate(360deg);
-}
 
 .theme-switch .ball {
   transition: var(--transition);

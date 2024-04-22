@@ -21,6 +21,11 @@
 	});
 </script>
 
+<svelte:head>
+    <title>Result of {data.student.roll_number}</title> 
+</svelte:head>
+
+
 <div class="container">
 	<div class="student-details">
 		Name: {student.name}<br />
@@ -63,11 +68,19 @@
 	}
 	.student-details {
 		border-radius: 10px;
-		background-color: var(--container);
 		color: var(--on-container);
 		margin: 20px;
 		padding: 20px;
 		text-align: left;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		background-color: var(--container);
+		transition: all 0.2s ease-in-out;
+		transform: scale(1);
+	}
+	.student-details:hover {
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		transform: scale(1.05);
+		cursor: pointer;
 	}
 	table {
 		border-collapse: collapse;
@@ -78,7 +91,7 @@
 	td {
 		text-align: left;
 		padding: 8px;
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid var(--on-background);
 	}
 
 	th {
@@ -87,7 +100,7 @@
 	}
 
 	tr:hover {
-		background-color: #f5f5f5;
+		background-color: var(--container);
 	}
 
 	@media screen and (max-width: 600px) {
@@ -103,13 +116,13 @@
 		}
 
 		table tr {
-			border-bottom: 3px solid #ddd;
+			border-bottom: 3px solid var(--on-background);
 			display: block;
 			margin-bottom: 0.625em;
 		}
 
 		table td {
-			border-bottom: 1px solid #ddd;
+			border-bottom: 1px solid var(--on-background);
 			display: block;
 			font-size: 0.8em;
 			text-align: right;

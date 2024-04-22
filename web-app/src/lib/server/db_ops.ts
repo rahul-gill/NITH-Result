@@ -49,7 +49,6 @@ export function getFilteredAndSortedResults(
     // Paginate the sorted data based on the provided page size and index
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
-    console.log(startIndex, endIndex);
   
     return sortedData.slice(startIndex, endIndex);
   }
@@ -57,7 +56,6 @@ export function getFilteredAndSortedResults(
 
 export function getStudent(roll_number: string): StudentResult | null {
   const student = jsonDataDetailed.find(item => item.roll_number === roll_number);
-  console.log(jsonDataDetailed[0], roll_number, jsonDataDetailed[0].semester_results[0].subject_results[0]);
   if(typeof student === 'undefined')
       return null;
   return student;

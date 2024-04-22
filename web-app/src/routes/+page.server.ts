@@ -6,7 +6,6 @@ import type { Actions } from './$types';
 export const load = (async () => {
     const list = getFilteredAndSortedResults("", false, SortingType.cgpi, '', '', 50, 0, 0, 11);
 
-    console.log(list);
     return {
         list,
         branches: resultConfig.available_branches,
@@ -19,7 +18,6 @@ export const actions = {
     default: async ({ cookies, request }) => {
         const data = await request.formData();
 
-        console.log(data);
         const search = data.get('search');
         const branch = data.get('branch');
         const batch = data.get('batch');
