@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { handle_promise } from 'svelte/internal';
 	import type { PageData } from './$types';
+	import { initD, setInitDTrue, search, branch, batch, sort, ascDesc } from '../stores/query_params';
 
 	export let data: PageData;
 
@@ -9,11 +9,13 @@
 	const branches = data.branches;
 	const batches = data.bataches;
 	const sorts = data.sortTypes;
-
-	let search = '';
-	let branch = branches[0];
-	let batch = batches[0];
-	let sort = sorts[0];
+	if(!initD){
+		search.set('');
+		branch.set(branches[0]);
+		batch.set(batches[0]);
+		sort.set(sorts[0]);
+		setInitDTrue();
+	}
 
 	let timeoutId = setTimeout(() => {}, 300);
 	function handleInput() {
@@ -61,29 +63,29 @@
 		id="search"
 		name="search"
 		placeholder="Search by roll number or name"
-		bind:value={search}
+		bind:value={$search}
 		on:input={handleInput}
 	/>
 
-	<select id="branch" name="branch" bind:value={branch} on:change={handleSubmit}>
+	<select id="branch" name="branch" bind:value={$branch} on:change={handleSubmit}>
 		{#each branches as branchOption}
 			<option value={branchOption}>{branchOption}</option>
 		{/each}
 	</select>
 
-	<select id="batch" name="batch" bind:value={batch} on:change={handleSubmit}>
+	<select id="batch" name="batch" bind:value={$batch} on:change={handleSubmit}>
 		{#each batches as batchOption}
 			<option value={batchOption}>{batchOption}</option>
 		{/each}
 	</select>
 
-	<select id="sort" name="sort" bind:value={sort} on:change={handleSubmit}>
+	<select id="sort" name="sort" bind:value={$sort} on:change={handleSubmit}>
 		{#each sorts as sortOption}
 			<option value={sortOption}>{sortOption}</option>
 		{/each}
 	</select>
 
-	<select id="sort_order" name="sort_order" on:change={handleSubmit}>
+	<select id="sort_order" name="sort_order" bind:value={$ascDesc} on:change={handleSubmit}>
 		<option value="DESC">Descending</option>
 		<option value="ASC">Ascending</option>
 	</select>
