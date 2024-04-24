@@ -97,7 +97,7 @@ var BranchCodesToNames = map[string]string{
 	"bar": "Architecture",
 	"bch": "Chemical",
 	"bms": "Material",
-	"bph": "Physics",
+	"bph": "Engineering Physics",
 	"dec": "Electronics Dual",
 	"dcs": "Computer Science Dual",
 	"bma": "Maths & Computing",
