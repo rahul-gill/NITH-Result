@@ -141,21 +141,24 @@ func main() {
 	for _, result := range data2 {
 		branchSet[result.Branch] = true
 	}
+
 	branches := make([]string, 0, len(branchSet))
-	branches = append(branches, "All")
+	branches = append(branches, "All branches")
 	for branch := range branchSet {
 		branches = append(branches, branch)
 	}
+	sort.Strings(branches[1:])
 
 	batchSet := make(map[string]bool)
 	for _, result := range data2 {
 		batchSet[result.Batch] = true
 	}
 	batches := make([]string, 0, len(batchSet))
-	batches = append(batches, "All")
+	batches = append(batches, "All batches")
 	for batch := range batchSet {
 		batches = append(batches, batch)
 	}
+	sort.Strings(batches[1:])
 	jsonBytes3, err := json.Marshal(map[string]interface{}{
 		"last_update_date":   time.Now().UTC().Format("02 Jan, 2006"),
 		"available_branches": branches,
