@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { initD, setInitDTrue, search, branch, batch, sort, ascDesc } from '../stores/query_params';
+	import IntersectionObserver from '../components/IntersectionObserver.svelte';
 
 	export let data: PageData;
 
@@ -23,9 +24,34 @@
 		timeoutId = setTimeout(handleSubmit, 300);
 	}
 
+	let currentPage = -1
 	let submitButtonRef: HTMLButtonElement;
 	function handleSubmit() {
+		currentPage = -1;
 		submitButtonRef.click();
+	}
+	async function onLoadMore(){
+		if(currentPage == -1){
+			currentPage = 1;
+		} else {
+			currentPage += 1
+		}
+		const formData = new FormData();
+					
+        formData.append('search', $search);
+        formData.append('branch', $branch);
+        formData.append('batch', $batch);
+        formData.append('sort', $sort);
+        formData.append('sort_order', $ascDesc);
+        formData.append('load_page', currentPage);
+		const r = await fetch('/', {
+			method: 'POST',
+			body: formData
+		});
+		r.body
+		const body = await r.json()
+		const resultListX = (body).list ?? [];
+		resultList = resultList.concat(...resultListX)
 	}
 
 	let isErrorToastVisible = false;
@@ -112,6 +138,7 @@
 			</a>
 		{/each}
 	</div>
+	<IntersectionObserver let:intersecting top={200} onIntersectingTrue={onLoadMore} />
 {/if}
 
 <style>
