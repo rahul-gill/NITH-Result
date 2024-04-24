@@ -22,7 +22,7 @@ func GenRollNumbersByBranchAndYear(branchCode string, yearCode int) (rollNumbers
 
 	} else {
 		for i := 0; i < 150; i++ {
-			if branchCode == "dcs" || branchCode == "dec" && i > 100 {
+			if (branchCode == "dcs" || branchCode == "dec") && i > 100 {
 				break
 			}
 			rollNumbers = append(rollNumbers, fmt.Sprintf("%d%s%.3d", yearCode, branchCode, i))
@@ -54,7 +54,7 @@ func GenRollNumbers() (rollNumbers []string) {
 		for branchCode := range BranchCodesToNames {
 		innermost:
 			for i := 0; i < 150; i++ {
-				if branchCode == "dcs" || branchCode == "dec" && i > 100 {
+				if (branchCode == "dcs" || branchCode == "dec") && i > 100 {
 					break innermost
 				}
 				rollNumbers = append(rollNumbers, fmt.Sprintf("%d%s%.3d", year, branchCode, i))
@@ -97,9 +97,10 @@ var BranchCodesToNames = map[string]string{
 	"bar": "Architecture",
 	"bch": "Chemical",
 	"bms": "Material",
-	"dcs": "Computer Science Dual",
-	"dec": "Electronics Dual",
 	"bph": "Physics",
+	"dec": "Electronics Dual",
+	"dcs": "Computer Science Dual",
+	"bma": "Maths & Computing",
 }
 
 var BranchCodesToNamesBefore19 = map[string]string{
