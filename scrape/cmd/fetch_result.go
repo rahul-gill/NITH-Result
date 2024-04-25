@@ -242,7 +242,7 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 	//build an array of student objects that contain result
 	var students []resultNITH.StudentHtmlParsed
 	for _, rollNumber := range rollNumbers {
-		time.Sleep(time.Second * time.Duration(rand.Intn(3)))
+		time.Sleep(time.Second * time.Duration(3))
 		resultHtml, err := getResultHtml(rollNumber)
 		if err != nil {
 			atomic.AddInt32(&doneRollNumbers, 1)
