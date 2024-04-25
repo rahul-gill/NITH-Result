@@ -5,6 +5,7 @@ import (
 	"Result-NITH/db"
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/mattn/go-sqlite3"
@@ -20,6 +21,26 @@ import (
 	"time"
 )
 
+type ResultFetchProcessError int
+
+const (
+	_                                              = iota
+	RollNumberDoesNotExist ResultFetchProcessError = iota + 1
+	InvalidHtml
+	UnknownParsingError
+)
+
+func (f ResultFetchProcessError) Error() string {
+	switch {
+	case errors.Is(f, RollNumberDoesNotExist):
+		return fmt.Sprintf("Roll number doesn't exists")
+	case errors.Is(f, InvalidHtml):
+		return fmt.Sprintf("Html received is invalid")
+	default:
+		return fmt.Sprintf("Unknown error")
+	}
+}
+
 // ParseResultHtml depends on the current html structure of official result website
 // - table 0 => last update title table
 // - table 1 => row 0 => rollNo, name, fathersName
@@ -28,23 +49,32 @@ import (
 // - first table subjects
 // - second table summary
 // - last table useless
-func ParseResultHtml(body io.ReadCloser) (user *resultNITH.StudentHtmlParsed, lastUpdateResultName string, err error) {
+func ParseResultHtml(body io.ReadCloser) (user *resultNITH.StudentHtmlParsed, parseError error) {
 	resultDoc, err := goquery.NewDocumentFromReader(body)
 	if err != nil {
-		return nil, "", err
+		return nil, UnknownParsingError
 	}
 	user = &resultNITH.StudentHtmlParsed{}
+	invalidRoll := resultDoc.Find("h2").FilterFunction(func(index int, selection *goquery.Selection) bool {
+		strings.EqualFold(selection.Text(), "Kindly Check the Roll Number")
+		return true
+	}).Length() > 0
+	if invalidRoll {
+		return nil, RollNumberDoesNotExist
+	}
+
 	tableFind := resultDoc.Find("table")
 	semesters := (tableFind.Length() - 3) / 2
 	if semesters < 0 || semesters >= tableFind.Length() {
-		return nil, "", fmt.Errorf("something went wrong")
+		return nil, InvalidHtml
 	}
 	user.SemesterResults = make([]resultNITH.SemesterResult, semesters)
 	tableFind.Each(func(tableIndex int, selection *goquery.Selection) {
-		if tableIndex == 0 {
-			//last update title table
-			lastUpdateResultName = strings.TrimSpace(selection.Find("tr td").Text())
-		} else if tableIndex == 1 {
+		if tableIndex == 0 || tableIndex == tableFind.Length()-1 {
+			//useless table
+			return
+		}
+		if tableIndex == 1 {
 			//student roll number, name, father's name
 			selection.Find("td").Each(func(cellIndex int, selection *goquery.Selection) {
 				txt := strings.Replace(selection.Text(), "ROLL NUMBER", "", -1)
@@ -60,9 +90,6 @@ func ParseResultHtml(body io.ReadCloser) (user *resultNITH.StudentHtmlParsed, la
 					user.FathersName = txt
 				}
 			})
-		} else if tableIndex == tableFind.Length()-1 {
-			//useless table
-			return
 		} else if tableIndex%2 == 0 {
 			//semester result table: subjects data
 			rowFind := selection.Find("tr")
@@ -110,7 +137,7 @@ func ParseResultHtml(body io.ReadCloser) (user *resultNITH.StudentHtmlParsed, la
 		}
 	})
 	if len(user.SemesterResults) <= 0 {
-		return nil, "", fmt.Errorf("invalid html")
+		return nil, InvalidHtml
 	}
 	user.CGPI = user.SemesterResults[len(user.SemesterResults)-1].CGPI
 	return
@@ -241,24 +268,46 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 	var doneRollNumbers int32 = 0
 	//build an array of student objects that contain result
 	var students []resultNITH.StudentHtmlParsed
-	for _, rollNumber := range rollNumbers {
+
+	processNext := func(rollNumber string) (*resultNITH.StudentHtmlParsed, error) {
 		time.Sleep(time.Second * time.Duration(rand.Intn(2)+1))
 		resultHtml, err := getResultHtml(rollNumber)
 		if err != nil {
-			atomic.AddInt32(&doneRollNumbers, 1)
-			err = fmt.Errorf("error for rollNumber %s: %w, Total done: %d\n", rollNumber, err, doneRollNumbers)
-			log.Print(err)
+			err = fmt.Errorf("error for rollNumber %s: %w in getResultHtml", rollNumber, err)
+			return nil, err
 		}
-		student, _, err := ParseResultHtml(resultHtml)
+		student, err := ParseResultHtml(resultHtml)
 		if err == nil && student != nil {
-			atomic.AddInt32(&doneRollNumbers, 1)
-			fmt.Printf("Success for rollNumber %s, Total done: %d\n", rollNumber, doneRollNumbers)
-			students = append(students, *student)
+			return student, nil
 		} else {
-			atomic.AddInt32(&doneRollNumbers, 1)
-			err = fmt.Errorf("error for rollNumber %s: %w, Total done: %d\n", rollNumber, err, doneRollNumbers)
-			log.Print(err)
+			err = fmt.Errorf("error for rollNumber %s: %w\n", rollNumber, err)
+			return nil, err
 		}
+	}
+	const maxRetries = 5
+	var retryNum = 0
+	for _, rollNumber := range rollNumbers {
+		retryNum = 0
+	retryLoop:
+		for retryNum <= maxRetries {
+			time.Sleep(time.Second * time.Duration(retryNum+1))
+			student, err := processNext(rollNumber)
+			if student != nil {
+				students = append(students, *student)
+				atomic.AddInt32(&doneRollNumbers, 1)
+				log.Printf("Success for rollNumber %s; Done: %d/%d", rollNumber, doneRollNumbers, len(rollNumbers))
+				break retryLoop
+			} else if errors.Is(err, RollNumberDoesNotExist) {
+				atomic.AddInt32(&doneRollNumbers, 1)
+				log.Printf("Skipping rollNumber %s, invalid roll number; Done: %d/%d", rollNumber, doneRollNumbers, len(rollNumbers))
+				break retryLoop
+			}
+			retryNum += 1
+			if retryNum <= maxRetries {
+				log.Printf("Unknown error for roll number %s, retryNumber %d after %d seconds", rollNumber, retryNum, retryNum+1)
+			}
+		}
+
 	}
 	return students
 }
