@@ -58,6 +58,11 @@ func GetBatchAndBranch(rollNumber string) (batch string, branch string) {
 	year, _ := strconv.Atoi(rollNumber[:2])
 	batch = "20" + strconv.Itoa(year+4)
 
+	if exceptionBranch, foundException := BranchExceptionRollNumbers[rollNumber]; foundException {
+		branch = exceptionBranch
+		return
+	}
+
 	if year <= 19 {
 		branchName, found := BranchCodesToNamesBefore19[rollNumber[2:3]]
 		if found {
@@ -97,4 +102,8 @@ var BranchCodesToNamesBefore19 = map[string]string{
 	"8":  "Material",
 	"55": "Computer Science Dual",
 	"45": "Electronics Dual",
+}
+
+var BranchExceptionRollNumbers = map[string]string{
+	"20bch008": "Mechanical",
 }
