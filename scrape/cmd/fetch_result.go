@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -261,9 +262,9 @@ func getResultHtml(rollNumber string) (io.ReadCloser, error) {
 	return resp.Body, nil
 }
 
-func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
+func getResultsFromWeb(forOnlyBatch *int) []resultNITH.StudentHtmlParsed {
 	//build an array of roll numbers
-	rollNumbers := resultNITH.GenRollNumbers()
+	rollNumbers := resultNITH.GenRollNumbers(forOnlyBatch)
 	println("Total roll numbers to process: ", len(rollNumbers))
 	var doneRollNumbers int32 = 0
 	//build an array of student objects that contain result
@@ -313,8 +314,17 @@ func getResultsFromWeb() []resultNITH.StudentHtmlParsed {
 }
 
 func main() {
-
-	students := getResultsFromWeb()
+	var yearToFetch *int = nil
+	if len(os.Args) > 1 {
+		fmt.Printf("Got batch argument: %s\n", os.Args[1])
+		yearToFetchVal, err := strconv.Atoi(os.Args[1])
+		if err != nil || yearToFetchVal < 18 || yearToFetchVal > 23 {
+			fmt.Errorf("Invalid argument; %w\n", err)
+			os.Exit(1)
+		}
+		yearToFetch = &yearToFetchVal
+	}
+	students := getResultsFromWeb(yearToFetch)
 	println("\n\nFinished fetching students\n")
 	alreadyCreated := 1
 	dbObj, queries := resultNITH.GetDbQueriesForNewDb("result.db", alreadyCreated == 1)

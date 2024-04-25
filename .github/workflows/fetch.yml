@@ -1,5 +1,12 @@
 name: Run Go Files and Generate Output
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Batch to fetch, valid values in fetch_result.go'
+        required: true
+        default: ''
+
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -19,7 +26,7 @@ jobs:
 
 
       - name: Build and run fetch_result.go
-        run: cd scrape && go run cmd/fetch_result.go
+        run: cd scrape && go run cmd/fetch_result.go '${{ github.event.inputs.batch }}'
 
       - name: Build and run gen_json.go
         run: cd scrape && go run cmd/gen_json.go

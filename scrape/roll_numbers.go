@@ -6,33 +6,7 @@ import (
 	"strings"
 )
 
-func GenRollNumbersByBranchAndYear(branchCode string, yearCode int) (rollNumbers []string) {
-	if yearCode == 19 {
-		for i := 0; i < 150; i++ {
-			if branchCode == "45" || branchCode == "55" {
-				if i > 100 {
-					break
-				}
-				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.2d", branchCode, i))
-			} else {
-				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.3d", branchCode, i))
-			}
-
-		}
-
-	} else {
-		for i := 0; i < 150; i++ {
-			if (branchCode == "dcs" || branchCode == "dec") && i > 100 {
-				break
-			}
-			rollNumbers = append(rollNumbers, fmt.Sprintf("%d%s%.3d", yearCode, branchCode, i))
-		}
-	}
-
-	return
-}
-
-func GenRollNumbers() (rollNumbers []string) {
+func GenRollNumbers(forOnlyBatch *int) (rollNumbers []string) {
 	for branchCode := range BranchCodesToNamesBefore19 {
 	innermost2:
 		for i := 0; i < 150; i++ {
@@ -40,17 +14,26 @@ func GenRollNumbers() (rollNumbers []string) {
 				if i > 100 {
 					break innermost2
 				}
-				rollNumbers = append(rollNumbers, fmt.Sprintf("18%s%.2d", branchCode, i))
-				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.2d", branchCode, i))
-			} else {
+				if forOnlyBatch == nil || *forOnlyBatch == 18 {
+					rollNumbers = append(rollNumbers, fmt.Sprintf("18%s%.2d", branchCode, i))
+				}
+				if forOnlyBatch == nil || *forOnlyBatch == 19 {
+					rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.2d", branchCode, i))
+				}
+			}
+			if forOnlyBatch == nil || *forOnlyBatch == 18 {
 				rollNumbers = append(rollNumbers, fmt.Sprintf("18%s%.3d", branchCode, i))
+			}
+			if forOnlyBatch == nil || *forOnlyBatch == 19 {
 				rollNumbers = append(rollNumbers, fmt.Sprintf("19%s%.3d", branchCode, i))
 			}
-
 		}
 	}
 
 	for year := 20; year <= 23; year++ {
+		if forOnlyBatch != nil && *forOnlyBatch != year {
+			continue
+		}
 		for branchCode := range BranchCodesToNames {
 		innermost:
 			for i := 0; i < 150; i++ {
