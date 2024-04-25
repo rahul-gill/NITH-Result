@@ -271,7 +271,6 @@ func getResultsFromWeb(forOnlyBatch *int) []resultNITH.StudentHtmlParsed {
 	var students []resultNITH.StudentHtmlParsed
 
 	processNext := func(rollNumber string) (*resultNITH.StudentHtmlParsed, error) {
-		time.Sleep(time.Second * time.Duration(rand.Intn(2)+1))
 		resultHtml, err := getResultHtml(rollNumber)
 		if err != nil {
 			err = fmt.Errorf("error for rollNumber %s: %w in getResultHtml", rollNumber, err)
@@ -291,7 +290,9 @@ func getResultsFromWeb(forOnlyBatch *int) []resultNITH.StudentHtmlParsed {
 		retryNum = 0
 	retryLoop:
 		for retryNum <= maxRetries {
-			time.Sleep(time.Second * time.Duration(retryNum+1))
+			var sleepDuration = retryNum + 1 + rand.Intn(2)
+			log.Printf("Next fetch after %d seconds\n", sleepDuration)
+			time.Sleep(time.Second * time.Duration(sleepDuration))
 			student, err := processNext(rollNumber)
 			if student != nil {
 				students = append(students, *student)
@@ -304,9 +305,7 @@ func getResultsFromWeb(forOnlyBatch *int) []resultNITH.StudentHtmlParsed {
 				break retryLoop
 			}
 			retryNum += 1
-			if retryNum <= maxRetries {
-				log.Printf("Unknown error for roll number %s, retryNumber %d after %d seconds", rollNumber, retryNum, retryNum+1)
-			}
+			log.Printf("Unknown error for roll number %s, will retry: %t", rollNumber, retryNum <= maxRetries)
 		}
 
 	}

@@ -1,5 +1,4 @@
-import type { ResultDataConfig, SemesterResult, SemesterResultDBType, StudentResult, StudentResultCompact, SubjectResult, SubjectResultDBType } from "./types";
-import type { SortingType } from "./types";
+import {type ResultDataConfig, SortingType, type StudentResult, type StudentResultCompact} from "./types";
 import _result_config from '../../../static/result_config.json';
 import _json_data from '../../../static/ranks_result.json';
 import _json_data_detailed from '../../../static/detailed_result.json';
@@ -34,16 +33,44 @@ export function getFilteredAndSortedResults(
   
     // Sort the filtered data based on the provided sorting type
     const sortedData = filteredData.sort((a, b) => {
-      const aValue = a[sortingType];
-      const bValue = b[sortingType];
-  
-      if (aValue < bValue) {
-        return isSortOrderAscending ? -1 : 1;
-      } else if (aValue > bValue) {
-        return isSortOrderAscending ? 1 : -1;
-      } else {
-        return 0;
-      }
+
+        if(sortingType == SortingType.name){
+            const aValue = a.name;
+            const bValue = b.name;
+            if (aValue < bValue) {
+                return isSortOrderAscending ? -1 : 1;
+            } else if (aValue > bValue) {
+                return isSortOrderAscending ? 1 : -1;
+            } else {
+                return 0;
+            }
+        } else if(sortingType == SortingType.rollNumber) {
+            const aValue = a.roll_number;
+            const bValue = b.roll_number;
+            if (aValue < bValue) {
+                return isSortOrderAscending ? -1 : 1;
+            } else if (aValue > bValue) {
+                return isSortOrderAscending ? 1 : -1;
+            } else {
+                return 0;
+            }
+        } else {
+            if(a.cgpi < b.cgpi){
+                return isSortOrderAscending ? -1 : 1;
+            } else if(a.cgpi > b.cgpi){
+                return  isSortOrderAscending ? 1 : -1;
+            }
+            const aValue = a.roll_number;
+            const bValue = b.roll_number;
+            if (aValue < bValue) {
+                return isSortOrderAscending ? 1 : -1;
+            } else if (aValue > bValue) {
+                return isSortOrderAscending ? -1 : 1;
+            } else {
+                return 0;
+            }
+        }
+
     });
   
     // Paginate the sorted data based on the provided page size and index

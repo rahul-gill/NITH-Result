@@ -20,23 +20,42 @@ func getRanksData(queries *db.Queries) []resultNITH.StudentResultWithRanks {
 	}
 
 	studentsOut := make([]resultNITH.StudentResultWithRanks, len(studentDetails))
+
+	var branchBasedRanksMap = map[string]int{}
+	var batchBasedRanksMap = map[string]int{}
+	var batchBranchBasedRanksMap = map[string]int{}
+
+	for _, eachBranch := range resultNITH.BranchCodesToNames {
+		branchRanks, _ := queries.GetRanksData(ctx, db.GetRanksDataParams{
+			Batch:  "%",
+			Branch: eachBranch,
+		})
+		for i, item := range branchRanks {
+			branchBasedRanksMap[item.RollNumber] = i + 1
+		}
+	}
+	for _, eachBatch := range []string{"2022", "2023", "2024", "2025", "2026", "2027"} {
+		batchRanks, _ := queries.GetRanksData(ctx, db.GetRanksDataParams{
+			Batch:  eachBatch,
+			Branch: "%",
+		})
+		for i, item := range batchRanks {
+			batchBasedRanksMap[item.RollNumber] = i + 1
+		}
+	}
+	for _, eachBranch := range resultNITH.BranchCodesToNames {
+		for _, eachBatch := range []string{"2022", "2023", "2024", "2025", "2026", "2027"} {
+			classRanks, _ := queries.GetRanksData(ctx, db.GetRanksDataParams{
+				Batch:  eachBatch,
+				Branch: eachBranch,
+			})
+			for i, item := range classRanks {
+				batchBranchBasedRanksMap[item.RollNumber] = i + 1
+			}
+		}
+	}
+
 	for index, student := range studentDetails {
-		classRank, _ := queries.GetStudentClassRank(ctx, db.GetStudentClassRankParams{
-			Batch:    student.Batch,
-			Branch:   student.Branch,
-			Semester: student.LatestSemester,
-			Cgpi:     student.Cgpi,
-		})
-		yearRank, _ := queries.GetStudentYearRank(ctx, db.GetStudentYearRankParams{
-			Batch:    student.Batch,
-			Semester: student.LatestSemester,
-			Cgpi:     student.Cgpi,
-		})
-		branchRank, _ := queries.GetStudentBranchRank(ctx, db.GetStudentBranchRankParams{
-			Branch:   student.Branch,
-			Semester: student.LatestSemester,
-			Cgpi:     student.Cgpi,
-		})
 
 		studentsOut[index] = resultNITH.StudentResultWithRanks{
 			RollNumber:  student.RollNumber,
@@ -45,9 +64,9 @@ func getRanksData(queries *db.Queries) []resultNITH.StudentResultWithRanks {
 			CGPI:        student.Cgpi,
 			Branch:      student.Branch,
 			Batch:       student.Batch,
-			BranchRank:  branchRank,
-			YearRank:    yearRank,
-			ClassRank:   classRank,
+			BranchRank:  int64(branchBasedRanksMap[student.RollNumber]),
+			YearRank:    int64(batchBasedRanksMap[student.RollNumber]),
+			ClassRank:   int64(batchBranchBasedRanksMap[student.RollNumber]),
 		}
 	}
 	sort.Slice(studentsOut, func(i, j int) bool {

@@ -56,4 +56,26 @@ WHERE student.branch = ? AND srd.semester = ? AND srd.cgpi > ?;
 SELECT COUNT(*) + 1
 FROM semester_result_data AS srd INNER JOIN student
 ON srd.student_roll_number = student.roll_number
-WHERE student.batch = ? AND srd.semester = ? AND srd.cgpi > ?
+WHERE student.batch = ? AND srd.semester = ? AND srd.cgpi > ?;
+
+-- name: GetRanksData :many
+SELECT
+    student.roll_number,
+    semester_result_data.cgpi AS curr_cg
+FROM
+    student,
+    semester_result_data,
+    (SELECT
+         inner_res.student_roll_number,
+        MAX(inner_res.semester) AS latest_semester
+    FROM
+        semester_result_data inner_res
+    GROUP BY
+         inner_res.student_roll_number
+    ) AS LatestSemester
+WHERE
+    student.roll_number = semester_result_data.student_roll_number
+    AND semester_result_data.student_roll_number = LatestSemester.student_roll_number
+    AND semester_result_data.semester = LatestSemester.latest_semester
+    AND student.batch like ? AND student.branch like ?
+ORDER BY semester_result_data.cgpi DESC, student.roll_number;
