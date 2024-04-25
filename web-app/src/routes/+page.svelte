@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
-	import { initD, setInitDTrue, search, branch, batch, sort, ascDesc } from '../stores/query_params';
+	import { initD, setInitDTrue, search, branch, batch, sort, ascDesc, resultList } from '../stores/query_params';
 	import IntersectionObserver from '../components/IntersectionObserver.svelte';
 
 	export let data: PageData;
 
-	let resultList = data.list;
 	const branches = data.branches;
 	const batches = data.bataches;
 	const sorts = data.sortTypes;
@@ -15,6 +14,7 @@
 		branch.set(branches[0]);
 		batch.set(batches[0]);
 		sort.set(sorts[0]);
+		resultList.set(data.list)
 		setInitDTrue();
 	}
 
@@ -51,7 +51,7 @@
 		r.body
 		const body = await r.json()
 		const resultListX = (body).list ?? [];
-		resultList = resultList.concat(...resultListX)
+		resultList.set($resultList.concat(...resultListX))
 	}
 
 	let isErrorToastVisible = false;
@@ -78,7 +78,7 @@
 				if (result.type == 'failure') {
 					showErrorToast();
 				} else {
-					resultList = result.data?.list ?? [];
+					resultList.set(result.data?.list ?? []);
 				}
 			}
 		};
@@ -118,11 +118,11 @@
 
 	<button bind:this={submitButtonRef} type="submit" class="submit-button">Submit</button>
 </form>
-{#if resultList.length == 0}
+{#if $resultList.length == 0}
 	<div class="no-results-message">No students found</div>
 {:else}
 	<div class="result-card-list">
-		{#each resultList as resultItem, index}
+		{#each $resultList as resultItem, index}
 			<a class="result-card" href="/{resultItem.roll_number}">
 				<div class="list-index">#{index + 1}</div>
 				{resultItem.name}<br />
