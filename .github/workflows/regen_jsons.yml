@@ -1,4 +1,4 @@
-name: Run Go Files and Generate Output
+name: Generate json files from db
 on: workflow_dispatch
 
 env:
