@@ -14,3 +14,11 @@
 - These three files are required to be put in `/web-app/static/`
 - The code is automatically deployed through vercel if setup correctly
 - TODO: Don't know why web-app suddenly requires bigger `--max_old_space_size`, any workaround for this?
+
+## Branch change or missing roll numbers
+- report on this [issue](https://github.com/rahul-gill/NITH-Result/issues/7)
+### How to update branch change info
+- update the db table first with correct branch
+- re-run the `gen_json.go` executable to re-generate the json files
+- copy json files from scrape to `web-app/static`
+- modify the `scrape/roll_numbers.go` and  add this roll number and correct branch in `BranchExceptionRollNumbers` map
