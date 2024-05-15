@@ -107,4 +107,5 @@ var BranchCodesToNamesBefore19 = map[string]string{
 var BranchExceptionRollNumbers = map[string]string{
 	"20bch008": "Mechanical",
 	"20bms023": "Mechanical",
+	"20bee039": "Electronics Dual",
 }
