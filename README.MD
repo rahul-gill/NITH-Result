@@ -18,7 +18,12 @@
 ## Branch change or missing roll numbers
 - report on this [issue](https://github.com/rahul-gill/NITH-Result/issues/7)
 ### How to update branch change info
-- update the db table first with correct branch
+- update the db table first with correct branch with
+```sql
+UPDATE student
+set branch = :new_branch
+WHERE roll_number = :roll_number;
+```
 - re-run the `gen_json.go` executable to re-generate the json files
 - copy json files from scrape to `web-app/static`
 - modify the `scrape/roll_numbers.go` and  add this roll number and correct branch in `BranchExceptionRollNumbers` map

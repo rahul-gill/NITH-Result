@@ -104,9 +104,14 @@ var BranchCodesToNamesBefore19 = map[string]string{
 	"45": "Electronics Dual",
 }
 
+// BranchExceptionRollNumbers : Put roll numbers in lower case
 var BranchExceptionRollNumbers = map[string]string{
 	"20bch008": "Mechanical",
 	"20bms023": "Mechanical",
 	"20bee039": "Electronics Dual",
 	"21bce032": "Electrical",
+	"21bce002": "Electrical",
+	"21bch009": "Electrical",
+	"21bch039": "Electrical",
+	"21bme040": "Electrical",
 }
