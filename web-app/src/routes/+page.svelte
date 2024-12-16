@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
+	import SEOPage from '../components/SEOPage.svelte';
 	import { initD, setInitDTrue, search, branch, batch, sort, ascDesc, resultList } from '../stores/query_params';
 	import IntersectionObserver from '../components/IntersectionObserver.svelte';
 
@@ -67,6 +68,7 @@
     <title>NITH results</title> 
 </svelte:head>
 
+<SEOPage title="NITH Results" description="NIT Hamirpur semester results" canonical="result-nith-rg.vercel.app/">
 
 <form
 	id="root_form"
@@ -140,6 +142,9 @@
 	</div>
 	<IntersectionObserver let:intersecting top={200} onIntersectingTrue={onLoadMore} />
 {/if}
+
+
+</SEOPage>
 
 <style>
 	form {

@@ -3,6 +3,7 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 
+	import SEOPage from '../../components/SEOPage.svelte';
 	export let data: PageData;
 
 	let student = data.student;
@@ -21,11 +22,10 @@
 	});
 </script>
 
-<svelte:head>
-    <title>Result of {data.student.roll_number}</title> 
-</svelte:head>
 
-
+<SEOPage title="NITH Results for {data.student.roll_number} {data.student.name}" 
+	description="NIT Hamirpur semester results for {data.student.roll_number} {data.student.name} "
+	canonical="result-nith-rg.vercel.app/{data.student.roll_number}">
 <div class="container">
 	<div class="student-details">
 		Name: {student.name}<br />
@@ -61,6 +61,7 @@
 		<!-- {/if} -->
 	{/each}
 </div>
+</SEOPage>
 
 <style>
 	.container {
