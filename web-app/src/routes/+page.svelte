@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import SEOPage from '../components/SEOPage.svelte';
+    import Snackbar from "../components/Snackbar.svelte";
 	import { initD, setInitDTrue, search, branch, batch, sort, ascDesc, resultList } from '../stores/query_params';
 	import IntersectionObserver from '../components/IntersectionObserver.svelte';
 
@@ -144,7 +145,9 @@
 {/if}
 
 
+<Snackbar/>
 </SEOPage>
+
 
 <style>
 	form {
