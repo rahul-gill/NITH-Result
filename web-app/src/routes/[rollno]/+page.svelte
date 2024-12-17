@@ -25,7 +25,7 @@
 
 <SEOPage title="NITH Results for {data.student.roll_number} {data.student.name}" 
 	description="NIT Hamirpur semester results for {data.student.roll_number} {data.student.name} "
-	canonical="result-nith-rg.vercel.app/{data.student.roll_number}">
+	canonical="https://result-nith-rg.vercel.app/{data.student.roll_number}">
 <div class="container">
 	<div class="student-details">
 		Name: {student.name}<br />
