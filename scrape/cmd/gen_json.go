@@ -34,7 +34,7 @@ func getRanksData(queries *db.Queries) []resultNITH.StudentResultWithRanks {
 			branchBasedRanksMap[item.RollNumber] = i + 1
 		}
 	}
-	for _, eachBatch := range []string{"2022", "2023", "2024", "2025", "2026", "2027"} {
+	for _, eachBatch := range []string{"2022", "2023", "2024", "2025", "2026", "2027", "2028"} {
 		batchRanks, _ := queries.GetRanksData(ctx, db.GetRanksDataParams{
 			Batch:  eachBatch,
 			Branch: "%",
@@ -44,7 +44,7 @@ func getRanksData(queries *db.Queries) []resultNITH.StudentResultWithRanks {
 		}
 	}
 	for _, eachBranch := range resultNITH.BranchCodesToNames {
-		for _, eachBatch := range []string{"2022", "2023", "2024", "2025", "2026", "2027"} {
+		for _, eachBatch := range []string{"2022", "2023", "2024", "2025", "2026", "2027", "2028"} {
 			classRanks, _ := queries.GetRanksData(ctx, db.GetRanksDataParams{
 				Batch:  eachBatch,
 				Branch: eachBranch,

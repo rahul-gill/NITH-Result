@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       batch:
-        description: 'Batch to fetch, valid values in fetch_result.go'
+        description: 'Batch to fetch, valid values 18,19,20,21,22,23,24'
         required: true
         default: ''
 
