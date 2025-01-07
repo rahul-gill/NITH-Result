@@ -7,8 +7,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	_ "github.com/mattn/go-sqlite3"
 	"io"
 	"log"
 	"math/rand"
@@ -20,6 +18,9 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type ResultFetchProcessError int
@@ -169,19 +170,6 @@ func StoreStudentInDb(sqlDB *sql.DB, queries *db.Queries, students []resultNITH.
 		if err != nil {
 			println("Error when creating student entry for rollNumber ", student.RollNumber, ": ", err)
 		}
-		//subject table
-		for _, sem := range student.SemesterResults {
-			for _, subject := range sem.SubjectResults {
-				_, err := qtx.CreateSubject(ctx, db.CreateSubjectParams{
-					Code:    subject.SubjectCode,
-					Name:    subject.SubjectName,
-					Credits: subject.SubPoint,
-				})
-				if err != nil {
-					println("Error when creating subject entry for rollNumber ", student.RollNumber, "and subject ", subject.SubjectName, ": ", err)
-				}
-			}
-		}
 		//semester result
 		for semNumber, sem := range student.SemesterResults {
 			_, err := qtx.CreateSemesterResultData(ctx, db.CreateSemesterResultDataParams{
@@ -203,6 +191,8 @@ func StoreStudentInDb(sqlDB *sql.DB, queries *db.Queries, students []resultNITH.
 					Grade:             subject.Grade,
 					SubGp:             subject.SubGP,
 					Semester:          int64(semNumber + 1),
+					SubjectName:       subject.SubjectName,
+					SubjectCredits:    subject.SubPoint,
 				})
 				if err != nil {
 					println("Error when creating subject result entry for rollNumber ", student.RollNumber, "and subject ", subject.SubjectName, ": ", err.Error())
@@ -264,7 +254,8 @@ func getResultHtml(rollNumber string) (io.ReadCloser, error) {
 
 func getResultsFromWeb(forOnlyBatch *int) []resultNITH.StudentHtmlParsed {
 	//build an array of roll numbers
-	rollNumbers := resultNITH.GenRollNumbers(forOnlyBatch)
+	//rollNumbers := resultNITH.GenRollNumbers(forOnlyBatch)
+	rollNumbers := [1]string{"23bcs110"}
 	println("Total roll numbers to process: ", len(rollNumbers))
 	var doneRollNumbers int32 = 0
 	//build an array of student objects that contain result

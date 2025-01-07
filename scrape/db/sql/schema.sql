@@ -16,10 +16,10 @@ CREATE TABLE subject_result_data
     subject_code        text not null ,
     grade               text not null ,
     sub_gp              int not null ,
+  	subject_name        text not null ,
+  	subject_credits     int not null ,
     primary key (student_roll_number, subject_code),
-    foreign key (subject_code) references subject (code),
-    foreign key (student_roll_number) references student (roll_number),
-    foreign key (subject_code) references subject (code)
+    foreign key (student_roll_number) references student (roll_number)
 );
 
 CREATE TABLE semester_result_data
@@ -30,11 +30,4 @@ CREATE TABLE semester_result_data
     sgpi                real not null ,
     primary key (student_roll_number, semester),
     foreign key (student_roll_number) references student (roll_number)
-);
-
-CREATE TABLE subject
-(
-    code    text primary key not null ,
-    name    text not null ,
-    credits integer not null
 );
