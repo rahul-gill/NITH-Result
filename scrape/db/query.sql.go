@@ -422,3 +422,17 @@ func (q *Queries) GetStudentYearRank(ctx context.Context, arg GetStudentYearRank
 	err := row.Scan(&column_1)
 	return column_1, err
 }
+
+const updateStudentBranch = `-- name: UpdateStudentBranch :exec
+UPDATE student set branch = ? where roll_number = ?
+`
+
+type UpdateStudentBranchParams struct {
+	Branch     string `json:"branch"`
+	RollNumber string `json:"roll_number"`
+}
+
+func (q *Queries) UpdateStudentBranch(ctx context.Context, arg UpdateStudentBranchParams) error {
+	_, err := q.db.ExecContext(ctx, updateStudentBranch, arg.Branch, arg.RollNumber)
+	return err
+}

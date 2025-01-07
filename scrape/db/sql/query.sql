@@ -16,6 +16,9 @@ VALUES (?, ?, ?, ?) RETURNING *;
 -- name: GetStudent :one
 SELECT * FROM student where roll_number = ? LIMIT 1;
 
+-- name: UpdateStudentBranch :exec
+UPDATE student set branch = ? where roll_number = ?;
+
 
 -- name: GetAllStudent :many
 SELECT * FROM student;
