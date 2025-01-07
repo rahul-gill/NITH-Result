@@ -145,7 +145,7 @@
 {/if}
 
 
-<!-- <Snackbar/> -->
+<Snackbar/>
 </SEOPage>
 
 
