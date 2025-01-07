@@ -254,8 +254,7 @@ func getResultHtml(rollNumber string) (io.ReadCloser, error) {
 
 func getResultsFromWeb(forOnlyBatch *int) []resultNITH.StudentHtmlParsed {
 	//build an array of roll numbers
-	//rollNumbers := resultNITH.GenRollNumbers(forOnlyBatch)
-	rollNumbers := [1]string{"23bcs110"}
+	rollNumbers := resultNITH.GenRollNumbers(forOnlyBatch)
 	println("Total roll numbers to process: ", len(rollNumbers))
 	var doneRollNumbers int32 = 0
 	//build an array of student objects that contain result
