@@ -1,11 +1,20 @@
-name: Run Go Files and Generate Output
+name: Refresh result data
 on:
   workflow_dispatch:
     inputs:
       batch:
-        description: 'Batch to fetch, valid values 18,19,20,21,22,23,24'
+        type: choice
+        description: 'First two digits of roll numbers to refresh result for, valid values 18,19,20,21,22,23,24'
         required: true
-        default: ''
+        options:
+        - 18
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+        - 24
+run-name: Refresh data for roll numbers beginning with ${{ inputs.batch }}
 
 
 env:
