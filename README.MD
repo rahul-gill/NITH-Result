@@ -1,7 +1,7 @@
 ## About the source 
 - the code for scraping result data is in `/scrape`
 - the code for the front-end is in `/web-app`
-- There's a GitHub action to scrape more data and do everything else required. Since GitHub actions will be cancelled after a certain time, it has a year parameter to load new data for that batch year only.
+- There's are two Github action jobs: one to refresh data from official website, another to update branch for a roll number. Since GitHub actions will be cancelled after a certain time, the former has a year parameter to load new data for that year only
 ## How it works
 - the captcha is a joke
 - for not getting blocked, the requests for fetching html are dispatched after a delay and retry logic handles if we fail because of too many requests.
@@ -27,3 +27,6 @@ WHERE roll_number = :roll_number;
 - re-run the `gen_json.go` executable to re-generate the json files
 - copy json files from scrape to `web-app/static`
 - modify the `scrape/roll_numbers.go` and  add this roll number and correct branch in `BranchExceptionRollNumbers` map
+
+
+![Image](https://github.com/user-attachments/assets/4d1b97d4-7beb-49af-aaff-868579641a7d)
