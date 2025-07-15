@@ -1,4 +1,4 @@
-# CONTACT FOR BECOMING A MAINTAINER
+# CONTACT TO BECOME A MAINTAINER
 ## About the source 
 - the code for scraping result data is in `/scrape`
 - the code for the front-end is in `/web-app`
