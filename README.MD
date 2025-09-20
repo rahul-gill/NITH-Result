@@ -3,6 +3,9 @@
 - the code for scraping result data is in `/scrape`
 - the code for the front-end is in `/web-app`
 - There's are two Github action jobs: one to refresh data from official website, another to update branch for a roll number. Since GitHub actions will be cancelled after a certain time, the former has a year parameter to load new data for that year only
+## Build related instructions
+- `NODE_OPTIONS=--max-old-space-size=5000` to increase heap size if build fails due to insufficient heap size locally
+
 ## How it works
 - the captcha is a joke
 - for not getting blocked, the requests for fetching html are dispatched after a delay and retry logic handles if we fail because of too many requests.
