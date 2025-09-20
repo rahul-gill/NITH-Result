@@ -40,11 +40,13 @@
 
 		<table>
 			<thead>
-				<th>Subject name</th>
-				<th>Subject code</th>
-				<th>Points</th>
-				<th>Grade</th>
-				<th>SubGP</th>
+				<tr>
+					<th>Subject name</th>
+					<th>Subject code</th>
+					<th>Points</th>
+					<th>Grade</th>
+					<th>SubGP</th>
+				</tr>
 			</thead>
 			<tbody>
 				{#each semester.subject_results as subject}
