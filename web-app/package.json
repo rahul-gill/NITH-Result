@@ -2,6 +2,7 @@
 	"name": "nith-results-web-app",
 	"version": "0.0.1",
 	"private": true,
+	"packageManager": "pnpm@10.16.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -34,6 +35,5 @@
 		"src/lib/server/ranks_result.json",
 		"src/lib/server/result_config.json"
 	],
-	"type": "module",
-	"packageManager": "pnpm@10.16.1"
+	"type": "module"
 }
