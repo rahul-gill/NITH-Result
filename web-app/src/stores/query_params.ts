@@ -1,4 +1,4 @@
-import type { StudentResultCompact } from '$lib/server/types';
+import type { StudentResultCompact } from '#lib/server/types';
 import { writable, type Writable } from 'svelte/store';
 
 const sortOptions = ['Sort by CGPI', 'Sort by Roll Number', 'Sort by Name'];

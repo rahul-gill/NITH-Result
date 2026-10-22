@@ -1,4 +1,4 @@
-import { resultConfig } from '$lib/server/db_ops';
+import { resultConfig } from '#lib/server/db_ops';
 import type { LayoutServerLoad } from './$types';
 
 export const load = (async () => {

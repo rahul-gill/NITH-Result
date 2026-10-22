@@ -1,6 +1,6 @@
 
-import { getFilteredAndSortedResults, resultConfig } from '$lib/server/db_ops';
-import { SortingType } from '$lib/server/types';
+import { getFilteredAndSortedResults, resultConfig } from '#lib/server/db_ops';
+import { SortingType } from '#lib/server/types';
 import { json } from '@sveltejs/kit';
 export async function POST({ request, cookies }) {
 	const data = await request.formData();

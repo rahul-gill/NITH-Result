@@ -12,23 +12,28 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write ."
 	},
+	"imports": {
+		"#lib/*.svelte": "./src/lib/*.svelte",
+		"#lib/*": "./src/lib/*.ts"
+	},
 	"devDependencies": {
-		"@sveltejs/adapter-vercel": "^5.10.2",
-		"@sveltejs/kit": "^2.42.2",
-		"@typescript-eslint/eslint-plugin": "^8.44.0",
-		"@typescript-eslint/parser": "^8.44.0",
-		"eslint": "^9.36.0",
+		"@sveltejs/adapter-vercel": "^7.0.1",
+		"@sveltejs/kit": "^3.1.0",
+		"@typescript-eslint/eslint-plugin": "^8.72.0",
+		"@typescript-eslint/parser": "^8.72.0",
+		"eslint": "^10.13.0",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-svelte": "^3.12.3",
-		"prettier": "^3.6.2",
-		"prettier-plugin-svelte": "^3.4.0",
-		"sass": "^1.93.0",
-		"svelte": "^5.39.3",
-		"svelte-check": "^4.3.1",
-		"svelte-preprocess": "^6.0.3",
+		"eslint-plugin-svelte": "^3.23.1",
+		"prettier": "^3.9.10",
+		"prettier-plugin-svelte": "^4.1.1",
+		"sass": "^1.106.1",
+		"svelte": "^5.57.2",
+		"svelte-check": "^4.7.7",
+		"svelte-preprocess": "^6.0.5",
+		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
-		"typescript": "^5.9.2",
-		"vite": "^7.1.6"
+		"typescript": "^5.9.3",
+		"vite": "^8.3.5"
 	},
 	"files": [
 		"src/lib/server/deatiled_result.json",
