@@ -34,3 +34,14 @@ WHERE roll_number = :roll_number;
 
 
 ![Image](https://github.com/user-attachments/assets/4d1b97d4-7beb-49af-aaff-868579641a7d)
+
+## Vercel config changes
+```bash
+export VERCEL_API_TOKEN="your_vercel_access_token_here"
+
+tofu init
+
+tofu plan # preview plan and verify diff is as expected
+
+tofu apply
+```

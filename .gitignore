@@ -1,1 +1,7 @@
 .vercel
+.terraform/
+*.tfvars
+*.tfvars.json
+.terraform.tfstate.lock.info
+*.tfstate
+*.tfstate.*
