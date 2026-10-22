@@ -4,7 +4,7 @@ on:
     inputs:
       batch:
         type: choice
-        description: 'First two digits of roll numbers to refresh result for, valid values 18,19,20,21,22,23,24'
+        description: 'First two digits of roll numbers to refresh result for, valid values 18,19,20,21,22,23,24,...'
         required: true
         options:
         - 18
@@ -14,6 +14,10 @@ on:
         - 22
         - 23
         - 24
+        - 26
+        - 27
+        - 28
+        - 29
 run-name: Refresh data for roll numbers beginning with ${{ inputs.batch }}
 
 

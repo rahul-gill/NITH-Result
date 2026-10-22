@@ -302,12 +302,27 @@ func getResultsFromWeb(forOnlyBatch *int) []resultNITH.StudentHtmlParsed {
 	return students
 }
 
+// isYearEnded takes a 2-character year string (e.g., "24")
+// and returns true if that year has fully ended.
+func isYearEnded(shortYear int) bool {
+	// 1. Convert 2-digit year to 4-digit year (assumes 2000s)
+	fullYear := 2000 + shortYear
+
+	// 2. Create the deadline: January 1st at 00:00:00 of the FOLLOWING year
+	// For "24" (2024), the year ends exactly when 2025-01-01 00:00:00 begins
+	deadline := time.Date(fullYear+1, time.January, 1, 0, 0, 0, 0, time.Local)
+
+	// 3. Check if current time is on or after the deadline
+	now := time.Now()
+	return now.After(deadline) || now.Equal(deadline)
+}
+
 func main() {
 	var yearToFetch *int = nil
 	if len(os.Args) > 1 {
 		fmt.Printf("Got batch argument: %s\n", os.Args[1])
 		yearToFetchVal, err := strconv.Atoi(os.Args[1])
-		if err != nil || yearToFetchVal < 18 || yearToFetchVal > 24 {
+		if err != nil || yearToFetchVal < 18 || isYearEnded(yearToFetchVal) {
 			fmt.Errorf("Invalid argument; %w\n", err)
 			os.Exit(1)
 		}
