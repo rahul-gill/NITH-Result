@@ -322,7 +322,7 @@ func main() {
 	if len(os.Args) > 1 {
 		fmt.Printf("Got batch argument: %s\n", os.Args[1])
 		yearToFetchVal, err := strconv.Atoi(os.Args[1])
-		if err != nil || yearToFetchVal < 18 || isYearEnded(yearToFetchVal) {
+		if err != nil || yearToFetchVal < 18 || !isYearEnded(yearToFetchVal) {
 			fmt.Errorf("Invalid argument; %w\n", err)
 			os.Exit(1)
 		}
