@@ -30,7 +30,7 @@ func GenRollNumbers(forOnlyBatch *int) (rollNumbers []string) {
 		}
 	}
 
-	for year := 20; year <= 24; year++ {
+	for year := 20; year <= 35; year++ {
 		if forOnlyBatch != nil && *forOnlyBatch != year {
 			continue
 		}
